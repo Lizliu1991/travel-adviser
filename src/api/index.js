@@ -17,7 +17,7 @@ export const getPlacesData = async (type,sw,ne) => {
                 tr_longitude: ne.lng,
               },
               headers: {
-                'X-RapidAPI-Key': '0fdf5d5f62mshe82f5f4a528bb4ap1ea7bejsn930ceca804b9',
+                'X-RapidAPI-Key': process.env.REACT_APP_RAPIDAPI_TRAVEL_API_KEY,
                 'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
               }
         })
@@ -25,4 +25,22 @@ export const getPlacesData = async (type,sw,ne) => {
     } catch (error) {
 console.log("Error fetching data");
     }
+}
+
+export const getWeatherData = async (lat, lng) => {
+  try {
+ const { data } = await axios.get('https://weatherbit-v1-mashape.p.rapidapi.com/current', {
+  params: {
+    lon: lng,
+     lat: lat
+    },
+  headers: {
+    'X-RapidAPI-Key': process.env.REACT_APP_RAPIDAPI_WEATHER_API_KEY,
+    'X-RapidAPI-Host': 'weatherbit-v1-mashape.p.rapidapi.com'
+  }
+ })
+ return data
+  } catch (error) {
+console.log("Error fetching weather data")
+  }
 }

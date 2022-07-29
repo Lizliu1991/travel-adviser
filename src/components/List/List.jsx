@@ -6,7 +6,7 @@ import PlaceDetails from '../PlaceDetails/PlaceDetails'
 
 const List = ( {places, childClicked, isLoading,type, setType,rating, setRating } ) => {
   //return undefined
-console.log(rating);
+
   const classes = useStyles()
   
   // state for element references
@@ -62,7 +62,7 @@ Restaurants, Hotels & Attractions around you
                 </MenuItem>
               </Select>
             </FormControl><Grid container spacing={3} className={classes.list}>
-              {places?.map((place, i) => (
+              {/* {places?.map((place, i) => (
                 //to access a specific item
                 <Grid
                   item key={i} xs={12} ref={elRefs[i]}>
@@ -71,7 +71,7 @@ Restaurants, Hotels & Attractions around you
                     selected={Number(childClicked) === i}
                     refProp={elRefs[i]} />
                 </Grid>
-              ))}
+              ))} */}
             </Grid></>
 
 )}

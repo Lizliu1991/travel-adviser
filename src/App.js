@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { CssBaseline, Grid } from '@material-ui/core'
-import { getPlacesData } from './api'
+import { getPlacesData, getWeatherData } from './api'
 import List from './components/List/List'
 import Header from './components/Header/Header'
 import Map from './components/Map/Map'
 import PlaceDetails from './components/PlaceDetails/PlaceDetails'
+import { ControlPointDuplicateSharp } from '@material-ui/icons'
 
 
 
@@ -19,7 +20,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [type, setType] = useState('restaurants')
   const [rating, setRating] = useState(" ")
-
+const [weatherData, setWeatherData] = useState([])
 
 
   //get user's current location. this is only going to happen at the start
@@ -32,29 +33,39 @@ const App = () => {
   }, []);
 
   //get data according to the rating
-  useEffect(() => {
-    const filteredPlaces = places.filter((place) => place.rating > rating);
-    setFilterPlaces(filteredPlaces)
-  }, [rating])
+  // useEffect(() => {
+  //   const filteredPlaces = places.filter((place) => place.rating > rating);
+  //   setFilterPlaces(filteredPlaces)
+  // }, [rating])
 
   //get data from travel adviser API
   useEffect(() => {
-    setIsLoading(true)
+    // only do this when we have bounds(latitude and longitude). bounds {} will always be truthy,therefore... 
+    if (bounds.sw && bounds.ne) {
+      setIsLoading(true)
+      getWeatherData(coordinates.lat, coordinates.lng)
+      .then((data) => {
+        setWeatherData(data)
+      })
     getPlacesData(type, bounds.sw, bounds.ne)
       .then((data) => {
-        // console.log(data);
-        setPlaces(data)
+        // filter out dummy restaurants;
+        setPlaces(data
+          // ?.filter((place) => place.name && place.num_reviews > 0 )
+          )
         setFilterPlaces([])
         setRating(" ")
         setIsLoading(false)
           ;
       })
-  }, [type, coordinates, bounds])
+    }
+  }, [type, bounds])
+  //removed coordinates so when the loaction changes, the items in List change accordingly
 
   return (
     <>
       <CssBaseline />
-      <Header />
+      <Header setCoordinates={setCoordinates} />
       <Grid container spacing={3} style={{ width: '100%' }} >
         <Grid item xs={12} md={4}>
           <List places={filteredPlaces.length ? filteredPlaces : places} childClicked={childClicked} isLoading={isLoading}
@@ -71,6 +82,7 @@ const App = () => {
             coordinates={coordinates}
             places={filteredPlaces.length ? filteredPlaces : places}
             setChildClicked={setChildClicked}
+            weatherData={weatherData}
           />
         </Grid>
       </Grid>
